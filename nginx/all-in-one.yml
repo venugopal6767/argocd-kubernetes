@@ -23,13 +23,13 @@ spec:
         ports:
         - containerPort: 80
 ---
-# App1 Service
+# App1 LoadBalancer Service
 apiVersion: v1
 kind: Service
 metadata:
   name: app1-service
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: app1
   ports:
@@ -61,64 +61,15 @@ spec:
         ports:
         - containerPort: 80
 ---
-# App2 Service
+# App2 LoadBalancer Service
 apiVersion: v1
 kind: Service
 metadata:
   name: app2-service
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: app2
   ports:
   - port: 80
     targetPort: 80
----
-# -------------------------------
-# Ingress Resource
-# -------------------------------
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: sample-ingress
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /app1
-        pathType: Prefix
-        backend:
-          service:
-            name: app1-service
-            port:
-              number: 80
-      - path: /app2
-        pathType: Prefix
-        backend:
-          service:
-            name: app2-service
-            port:
-              number: 80
----
-# -------------------------------
-# Ingress Controller Service (LoadBalancer)
-# -------------------------------
-apiVersion: v1
-kind: Service
-metadata:
-  name: ingress-nginx-controller
-  namespace: ingress-nginx
-spec:
-  type: LoadBalancer
-  selector:
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/component: controller
-  ports:
-  - name: http
-    port: 80
-    targetPort: http
-  - name: https
-    port: 443
-    targetPort: https
