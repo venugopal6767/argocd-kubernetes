@@ -2,7 +2,7 @@
 # App1 Deployment
 # -------------------------------
 apiVersion: apps/v1
-kind: Deployment
+kind: Deployment 
 metadata:
   name: app1
   labels:
